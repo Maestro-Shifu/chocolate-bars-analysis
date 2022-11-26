@@ -1,1 +1,289 @@
-https://app.datacamp.com/workspace/w/69f470b3-6e5d-461f-a01f-cd1017735288/edit
+What makes a chocolate, the Best Chocolate Bar?
+High-quality chocolates are those created with the best beans and artisan processes, which provide the consumer with a smooth texture and uniform flavor.
+
+The chocolates with the brightest appearance, are the ones that finally have a higher price.
+
+The flavor is the most notable distinction between conventional chocolate and premium chocolate. Regardless of its origin, a good chocolate connoisseur will always look for the option that melts in the mouth. It is necessary to understand the qualities of gourmet chocolate bars to understand what the market is looking for from manufacturers. Let's see what makes a chocolate the best!
+
+image-caption
+
+What will we analyze in this report?
+
+We will analyze what makes a chocolate bar the best option, based on the information of 2485 chocolate bars. they were made from beans from 40 countries of origin and manufactured by 572 companies. Some factors were considered, such as the grade, the percentage of cocoa, the amount of ingredients and the ingredients.
+
+There are three negative indicators of chocolate bars. These are the amount of cocoa it has, the origin of the beans, associated with two particular countries. And whether or not it has Lecithin, bars without Lecithin are perceived as more flavorful.
+
+💾 The data
+Information (source):
+"id" - id number of the review
+"manufacturer" - Name of the bar manufacturer
+"company_location" - Location of the manufacturer
+"year_reviewed" - From 2006 to 2021
+"bean_origin" - Country of origin of the cacao beans
+"bar_name" - Name of the chocolate bar
+"cocoa_percent" - Cocoa content of the bar (%)
+"num_ingredients" - Number of ingredients
+"ingredients" - B (Beans), S (Sugar), S* (Sweetener other than sugar or beet sugar), C (Cocoa Butter), (V) Vanilla, (L) Lecithin, (Sa) Salt
+"review" - Summary of most memorable characteristics of the chocolate bar
+"rating" - 1.0-1.9 Unpleasant, 2.0-2.9 Disappointing, 3.0-3.49 Recommended, 3.5-3.9 Highly Recommended, 4.0-5.0 Oustanding
+Acknowledgments: Brady Brelinski, Manhattan Chocolate Society
+
+#Let's start by loading the work packages and our data set
+​
+suppressPackageStartupMessages(library(tidyverse))
+install.packages("viridis")  # Install
+library(viridisLite)
+library("viridis")
+​
+​
+​
+#code to improve details about lecticin
+install.packages("RMySQL")
+suppressPackageStartupMessages(library(RMySQL))
+library(tibble) # to handle data set that readable
+install.packages("datapasta")
+library(datapasta)
+library(rvest) # to scrap data from webpage
+library(stringr)
+library(janitor) # to make the colnames change easier
+library(skimr)
+library(DT) # datatable function
+library(forcats)
+install.packages("gghighlight")
+library(gghighlight)
+install.packages("ggthemes")
+install.packages("broom.mixed")
+library(broom.mixed)
+library(ggthemes)
+library(ggrepel)
+library(generics)
+library(broom) # for tidy function for linear model
+install.packages("jtools")
+library(jtools)
+install.packages("ggstance")
+library(ggstance)
+library(MASS)
+url = "https://flavorsofcacao.com/database_w_REF.html"
+Inspecting Data
+Data is inspected to check for any descrepancies.
+
+A tibble: 6 × 11
+id	manufacturer	company_location	year_reviewed	bean_origin	bar_name	cocoa_percent	num_ingredients	ingredients	review	rating
+<dbl>	<chr>	<chr>	<dbl>	<chr>	<chr>	<dbl>	<dbl>	<chr>	<chr>	<dbl>
+2454	5150	U.S.A.	2019	Tanzania	Kokoa Kamili, batch 1	76	3	B,S,C	rich cocoa, fatty, bready	3.25
+2458	5150	U.S.A.	2019	Dominican Republic	Zorzal, batch 1	76	3	B,S,C	cocoa, vegetal, savory	3.50
+2454	5150	U.S.A.	2019	Madagascar	Bejofo Estate, batch 1	76	3	B,S,C	cocoa, blackberry, full body	3.75
+2542	5150	U.S.A.	2021	Fiji	Matasawalevu, batch 1	68	3	B,S,C	chewy, off, rubbery	3.00
+2546	5150	U.S.A.	2021	Venezuela	Sur del Lago, batch 1	72	3	B,S,C	fatty, earthy, moss, nutty,chalky	3.00
+2546	5150	U.S.A.	2021	Uganda	Semuliki Forest, batch 1	80	3	B,S,C	mildly bitter, basic cocoa, fatty	3.25
+Average rating for number of ingredients
+A tibble: 6 × 2
+num_ingredients	avg_rating
+<dbl>	<dbl>
+1	2.958333
+2	3.218000
+3	3.268817
+4	3.127932
+5	3.079843
+6	2.937500
+It's a good place to start to understand consumer preferences for how pure they expect their chocolate bars to be.
+
+The general trend in consumer preference is that 3 ingredients can achieve a good gourmet chocolate bar, regardless of origin, and that if it has fewer or more ingredients, a decrease in the quality of the bar is perceived. We will analyze in graph 4 the influence of a particular ingredient lecithin.
+
+Average rating by country of origin
+A tibble: 62 × 2
+bean_origin	country_avg_rating
+<chr>	<dbl>
+Tobago	3.625000
+China	3.500000
+Sao Tome & Principe	3.500000
+Solomon Islands	3.450000
+Congo	3.318182
+Thailand	3.300000
+Cuba	3.291667
+Vietnam	3.287671
+Papua New Guinea	3.280000
+Madagascar	3.266949
+Haiti	3.266667
+Brazil	3.262821
+Guatemala	3.258065
+Nicaragua	3.255000
+Australia	3.250000
+Gabon	3.250000
+Sulawesi	3.250000
+Suriname	3.250000
+Trinidad	3.244048
+U.S.A.	3.242424
+Honduras	3.240000
+Tanzania	3.234177
+Belize	3.233553
+Venezuela	3.231225
+Dominican Republic	3.215708
+Jamaica	3.197917
+Peru	3.197746
+Colombia	3.196203
+Bolivia	3.181250
+Mexico	3.168182
+⋮	⋮
+Costa Rica	3.151163
+Ghana	3.134146
+Philippines	3.125000
+Vanuatu	3.115385
+Indonesia	3.112500
+Panama	3.111111
+Malaysia	3.093750
+Cameroon	3.083333
+Liberia	3.083333
+Samoa	3.083333
+Togo	3.083333
+Sao Tome	3.071429
+Uganda	3.065789
+Fiji	3.062500
+Blend	3.038462
+Grenada	3.026316
+Burma	3.000000
+DR Congo	3.000000
+El Salvador	3.000000
+Nigeria	3.000000
+Sumatra	3.000000
+St. Lucia	2.950000
+Sri Lanka	2.875000
+Taiwan	2.875000
+Ivory Coast	2.857143
+Martinique	2.750000
+Principe	2.750000
+Sierra Leone	2.750000
+St.Vincent-Grenadines	2.750000
+Puerto Rico	2.714286
+
+As shown in Graph 1, the score of the countries of origin of the bean ranges between 2.7 and 3.6. A chocolate bar made with beans from Tobago gets the highest rating, followed by China and Sao Tome & Principe. The Puerto Rican beans made the chocolate bar less tasty. Let's continue investigating in other plots how the origin influences the rating.
+
+Bars reviewed for each of those countries
+
+Graph 2 presents the number of chocolate bars reviewed for each country of origin of the bean. The number varies from 1 to 253.
+
+Of the 62 countries of origin for beans, nearly half of them have fewer than 10 bars reviewed.
+
+Is the cacao bean's origin an indicator of quality?
+A tibble: 10 × 4
+bean_origin	origin_rating	n	avg_percent
+<chr>	<dbl>	<int>	<dbl>
+Venezuela	3.231225	253	72.01779
+Peru	3.197746	244	70.95082
+Dominican Republic	3.215708	226	71.52655
+Ecuador	3.164384	219	73.27626
+Madagascar	3.266949	177	71.23729
+Blend	3.038462	156	71.92628
+Nicaragua	3.255000	100	71.42000
+Bolivia	3.181250	80	71.58750
+Tanzania	3.234177	79	72.26582
+Colombia	3.196203	79	70.98734
+A tibble: 62 × 4
+bean_origin	origin_rating	n	avg_percent
+<chr>	<dbl>	<int>	<dbl>
+Venezuela	3.231225	253	72.01779
+Peru	3.197746	244	70.95082
+Dominican Republic	3.215708	226	71.52655
+Ecuador	3.164384	219	73.27626
+Madagascar	3.266949	177	71.23729
+Blend	3.038462	156	71.92628
+Nicaragua	3.255000	100	71.42000
+Bolivia	3.181250	80	71.58750
+Tanzania	3.234177	79	72.26582
+Colombia	3.196203	79	70.98734
+Brazil	3.262821	78	71.38462
+Belize	3.233553	76	72.85526
+Vietnam	3.287671	73	72.35616
+Guatemala	3.258065	62	71.54839
+Mexico	3.168182	55	71.29091
+Papua New Guinea	3.280000	50	70.68000
+Costa Rica	3.151163	43	71.51163
+Trinidad	3.244048	42	71.76190
+Ghana	3.134146	41	71.04878
+India	3.164286	35	69.57143
+U.S.A.	3.242424	33	69.24242
+Haiti	3.266667	30	70.96667
+Honduras	3.240000	25	72.76000
+Jamaica	3.197917	24	71.62500
+Philippines	3.125000	24	71.06250
+Indonesia	3.112500	20	72.55000
+Uganda	3.065789	19	72.18421
+Grenada	3.026316	19	69.36842
+Fiji	3.062500	16	72.56250
+Sao Tome	3.071429	14	71.07143
+⋮	⋮	⋮	⋮
+Congo	3.318182	11	70.45455
+Solomon Islands	3.450000	10	71.80000
+St. Lucia	2.950000	10	71.90000
+Panama	3.111111	9	72.11111
+Malaysia	3.093750	8	71.62500
+Ivory Coast	2.857143	7	71.00000
+Puerto Rico	2.714286	7	68.28571
+El Salvador	3.000000	6	71.66667
+Thailand	3.300000	5	70.00000
+Sierra Leone	2.750000	4	71.00000
+Australia	3.250000	3	69.00000
+Cameroon	3.083333	3	69.33333
+Liberia	3.083333	3	70.66667
+Samoa	3.083333	3	82.33333
+Togo	3.083333	3	70.00000
+Nigeria	3.000000	3	68.33333
+Tobago	3.625000	2	65.00000
+Sao Tome & Principe  	3.500000	2	72.50000
+Sri Lanka	2.875000	2	72.50000
+Taiwan	2.875000	2	70.00000
+China	3.500000	1	72.00000
+Gabon	3.250000	1	75.00000
+Sulawesi	3.250000	1	66.00000
+Suriname	3.250000	1	70.00000
+Burma	3.000000	1	70.00000
+DR Congo	3.000000	1	68.00000
+Sumatra	3.000000	1	70.00000
+Martinique	2.750000	1	42.00000
+Principe	2.750000	1	77.00000
+St.Vincent-Grenadines	2.750000	1	72.00000
+When the number of chocolate bars reviewed is less than 10 bars, the distribution in the rating is random and does not result in a good rating index.
+
+England and Switzerland have the most variability in their qualification scores. Although Denmark does not have a high rating compared to other countries, it has never had a bad rating. Although the US has the most chocolate reviews over the years, it has an average rating compared to other countries. Switzerland has chocolates with really promising scores, but due to the high variability of the scores, it seems that it also suffered bad reviews, this may be due to higher expectations for the origin of the chocolate bar from Switzerland. Poland and São Tomé have the most extreme grade point average, but since they have a very low number of observations, the result is not strong.
+
+How does cocoa content relate to rating?
+A tibble: 10 × 4
+cocoa_percent	cocoa_rat	n	avg_percent
+<dbl>	<dbl>	<int>	<dbl>
+70	3.263384	1046	70
+75	3.165323	310	75
+72	3.210169	295	72
+65	3.175000	90	65
+80	3.084270	89	80
+68	3.288194	72	68
+74	3.223881	67	74
+73	3.193182	66	73
+60	3.005435	46	60
+71	3.063953	43	71
+For a chocolate bar with a rating above 3.5, the average cocoa per cent (70.95%) is lower than the average cocoa per cent (71.64%) of all chocolate bar. Chocolate bars with a rating above 3.5 the average cocoa per cent (70.9%) is lower than the average cocoa per cent (71.6%) of all chocolate bar.
+
+
+What is the average cocoa content for bars with higher ratings (above 3.5)?
+A tibble: 1 × 1
+cocoa_mean_content
+<dbl>
+70.94782
+A tibble: 1 × 1
+cocoa_total
+<dbl>
+71.63972
+We can infer that the higher the rating, the lower the chocolate percentage appears to be. Chocolates with 70-71% cocoa are expected to have the highest ratings. Although there is a negative relationship between cocoa content and mean rating, cocoa percent and ratings are not correlated.
+
+Comparing the average rating of bars with and without lecithin (L in the ingredients).
+
+The graph shows the difference in rating between chocolate bars with and without lecithin. For chocolate bars without lecithin as ingredients, the average rating is 3.2. For chocolate bars with lecithin as one of the ingredients, the average rating is 3.1. There's slight difference (1%) between rating and the lecithin usage in chocolates. It shows that including lecticin decreases the perceived quality of chocolate.
+
+Summary
+The average rating of review by origin range from 2.7 to 3.6 and there are more chocolate bars with rating higher than 3.
+Most of the cholocolate bars have 3 ingredients
+The number of review by origin range from 1 to 253
+Average rating of the chocolate bar is highest for the country Tobago
+Average rating of the chocolate bar is lowest for the country Puerto Rico
+Cocoa bean's origin is not an indicator of quality, There does not seem to be any significant difference between the location of the company and its chocolate ratings, with all companies sharing almost the same discrepancy and rating ranges.
+Including Lecticin among the ingredients decreases the perceived quality of the chocolate, and should not be included. Although this is a small difference in the average rating with or without lecticin, when analyzing it together with the amount of ingredients chosen to make a good gourmet chocolate bar (3), it is advisable to refrain from the use of lecticin
+
