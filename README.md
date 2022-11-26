@@ -1,4 +1,5 @@
 # chocolate-bars-analysis
+
 High-quality chocolates are those created with the best beans and artisan processes, which provide the consumer with a smooth texture and uniform flavor.
 
 The chocolates with the brightest appearance, are the ones that finally have a higher price.
